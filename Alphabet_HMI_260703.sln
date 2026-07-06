@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Alphabet_HMI_260703", "Alphabet_HMI_260703\Alphabet_HMI_260703.vcxproj", "{ADAAECAE-979D-4CC1-897B-34CFC863E0C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADAAECAE-979D-4CC1-897B-34CFC863E0C2}.Debug|x64.ActiveCfg = Debug|x64
+		{ADAAECAE-979D-4CC1-897B-34CFC863E0C2}.Debug|x64.Build.0 = Debug|x64
+		{ADAAECAE-979D-4CC1-897B-34CFC863E0C2}.Release|x64.ActiveCfg = Release|x64
+		{ADAAECAE-979D-4CC1-897B-34CFC863E0C2}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {89C96A59-F69F-4DF3-A682-0AB5058180D4}
+	EndGlobalSection
+EndGlobal

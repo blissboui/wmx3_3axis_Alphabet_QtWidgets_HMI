@@ -1,0 +1,87 @@
+﻿#include "WmxHandler.h"
+#include <QString>
+
+WmxHandler::WmxHandler(QObject* parent) :
+	QObject(parent),
+	alphabet(std::make_shared<Alphabet>()),
+	engineCtrl(std::make_shared<Engine>(&wmx)),
+	str(std::make_shared<InputString>()),
+	axisCtrl(std::make_shared<Axis>(&wmx)),
+	alphabet_AZ(27)
+{
+	// 디바이스 생성
+	CreateDevice();
+	// 통신 시작
+	StartCommunication();
+	// 엑셀 csv 파일로부터 A~Z 알파벳 좌표 데이터 읽은 후 전달한 변수에 저장
+	Alphabet::SetAlphabetData(alphabet_AZ, (std::string)"C:\\Users\\abc\\source\\repos\\wmx3_3axis_Alphabet_Program\\AlphabetData.csv");
+}
+
+void WmxHandler::CreateDevice()
+{
+	errMes = engineCtrl->CreateDevice();
+	if (!errMes.empty())
+	{
+		emit AlarmOccurred(QString::fromStdString(errMes));
+	}
+}
+
+void WmxHandler::StartCommunication()
+{
+	errMes = engineCtrl->StartCommunication();
+	if (!errMes.empty())
+	{
+		emit AlarmOccurred(QString::fromStdString(errMes));
+	}
+}
+
+void WmxHandler::ServoOnOff(const int select)
+{
+	errMes = axisCtrl->ServoOnOff(select);
+	if (!errMes.empty())
+	{
+		emit AlarmOccurred(QString::fromStdString(errMes));
+	}
+}
+
+void WmxHandler::GetAxisPosition(int axis_, double* position)
+{
+	axisCtrl->GetAxisPosition(axis_, position);
+}
+
+void WmxHandler::GetAxisVelocity(int axis_, double* velocity)
+{
+	axisCtrl->GetAxisVelocity(axis_, velocity);
+}
+
+void WmxHandler::SetOffset( const InputString& str_)
+{
+	vector<Alphabet> strAlphabet;	// 입력한 문자열 알파벳 배열
+	int row = 0, col = 0;
+
+	for (int idx = 0; idx < str_.GetStrLen(); idx++)
+	{
+		strAlphabet.push_back(alphabet_AZ[str_.GetStrType(idx)]);	// 알파벳 타입에 맞게 깊은 복사
+
+		for (int i = 0; i < alphabet_AZ[idx].GetCoordNum(); i++)
+		{
+			strAlphabet[idx].SetTargetPos(i, ROW_OFFSET_LEN * row, COL_OFFSET_LEN * col);	// 좌표에 옵셋 적용
+			strAlphabet[idx].ShowCoord(i);
+		}
+		cout << endl;
+		col++;
+		if (col >= MAX_COL) {
+			col = 0;
+			row++;
+		}
+		if (row >= MAX_ROW) {
+			emit AlarmOccurred("작성 가능한 글자수를 초과했습니다.");
+			return;
+		}
+	}
+}
+
+int WmxHandler::GetAxisNum(int i) const
+{
+	return alphabet->GetAxisNum(i);
+}
