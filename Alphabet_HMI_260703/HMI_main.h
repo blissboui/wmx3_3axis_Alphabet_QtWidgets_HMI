@@ -22,6 +22,7 @@ private slots:
 	void InputAlphabet();
     void closeEvent(QCloseEvent* event) override;
     void ShowAlarm(const QString& message);
+    QString WrapEnglishText(const QString& text, QLabel* label);
 private:
     Ui::HMI_mainClass ui;
     QTimer monitorTimer;

@@ -82,8 +82,12 @@ void HMI_main::InputAlphabet()
 {
 	alphabetInput = ui.leAlphabetInput->text().trimmed().toUpper();
 	qDebug() << "Input Alphabet: " << alphabetInput;
-
-	//ui.lblInputResult->setText(alphabetInput);  // 확인용 Label
+	
+	if (wmxCtrl.SetAlphabetString(alphabetInput.toStdString()))	// QString -> std::string 변환 후 WmxHandler에 전달
+	{
+		// 입력한 문자열 띄우기
+		ui.lblInputResult->setText(WrapEnglishText(alphabetInput, ui.lblInputResult));  // 확인용 Label
+	}
 }
 
 void HMI_main::closeEvent(QCloseEvent* event)
@@ -95,4 +99,30 @@ void HMI_main::closeEvent(QCloseEvent* event)
 void HMI_main::ShowAlarm(const QString& message)
 {
 	QMessageBox::critical(this, "ALARM", message);
+}
+
+QString HMI_main::WrapEnglishText(const QString& text, QLabel* label)
+{
+	// 알파벳 자동 줄바꿈 처리
+	QFontMetrics fontMetrics(label->font());
+
+	QString result;
+	QString line;
+
+	const int maxWidth = label->width();
+
+	for (const QChar& ch : text)
+	{
+		if (fontMetrics.horizontalAdvance(line + ch) > maxWidth)
+		{
+			result += line + '\n';
+			line.clear();
+		}
+
+		line += ch;
+	}
+
+	result += line;
+
+	return result;
 }

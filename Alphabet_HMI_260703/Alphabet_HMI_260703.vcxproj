@@ -112,7 +112,7 @@
     <QtUic Include="HMI_main.ui" />
     <ClCompile Include="Alphabet.cpp" />
     <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="InputString.cpp" />
+    <ClCompile Include="AlphabetString.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +123,7 @@
     <ClInclude Include="Error.h" />
     <QtMoc Include="HMI_main.h" />
     <QtMoc Include="WmxHandler.h" />
-    <ClInclude Include="InputString.h" />
+    <ClInclude Include="AlphabetString.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

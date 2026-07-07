@@ -1,8 +1,9 @@
-﻿#include "InputString.h"
+﻿#include "AlphabetString.h"
 
-void InputString::SetString() {
+void AlphabetString::SetString(const std::string str_) {
 	/*std::cout << "알파벳 대문자 문자열 입력 : ";
 	std::getline(std::cin, str);*/
+	str = str_;
 	strLen = str.size();
 	strType.clear();
 	for (int i = 0; i < strLen; i++) {
@@ -12,16 +13,16 @@ void InputString::SetString() {
 			strType.push_back(static_cast<int>(str[i]) - 'A');	//  ASCII 'A' = 65
 	}
 }
-void InputString::PrintString() const {
+void AlphabetString::PrintString() const {
 	cout << str << endl;
 	for (int i = 0; i < strLen; i++) {
 		cout << strType[i] << ", ";
 	}
 	cout << endl;
 }
-int InputString::GetStrLen() const {
+int AlphabetString::GetStrLen() const {
 	return strLen;
 }
-int InputString::GetStrType(int idx) const {
+int AlphabetString::GetStrType(int idx) const {
 	return strType[idx];
 }

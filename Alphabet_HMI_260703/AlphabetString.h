@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "Common.h"
 
-class InputString {
+class AlphabetString {
 public:
-	void SetString();
+	void SetString(const std::string str_);
 	void PrintString() const;
 	int GetStrLen() const;
 	int GetStrType(int idx) const;

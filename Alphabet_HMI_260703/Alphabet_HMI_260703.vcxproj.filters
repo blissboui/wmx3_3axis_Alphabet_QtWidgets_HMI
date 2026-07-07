@@ -40,7 +40,7 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputString.cpp">
+    <ClCompile Include="AlphabetString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WmxHandler.cpp">
@@ -63,7 +63,7 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputString.h">
+    <ClInclude Include="AlphabetString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Axis.h">

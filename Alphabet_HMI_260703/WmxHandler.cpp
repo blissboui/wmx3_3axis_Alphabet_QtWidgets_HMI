@@ -5,7 +5,7 @@ WmxHandler::WmxHandler(QObject* parent) :
 	QObject(parent),
 	alphabet(std::make_shared<Alphabet>()),
 	engineCtrl(std::make_shared<Engine>(&wmx)),
-	str(std::make_shared<InputString>()),
+	inputStr(std::make_shared<AlphabetString>()),
 	axisCtrl(std::make_shared<Axis>(&wmx)),
 	alphabet_AZ(27)
 {
@@ -54,19 +54,19 @@ void WmxHandler::GetAxisVelocity(int axis_, double* velocity)
 	axisCtrl->GetAxisVelocity(axis_, velocity);
 }
 
-void WmxHandler::SetOffset( const InputString& str_)
+void WmxHandler::SetOffset()
 {
-	vector<Alphabet> strAlphabet;	// 입력한 문자열 알파벳 배열
+	vector<Alphabet> currAlphabet;	// 입력한 문자열 알파벳 배열
 	int row = 0, col = 0;
 
-	for (int idx = 0; idx < str_.GetStrLen(); idx++)
+	for (int idx = 0; idx < inputStr->GetStrLen(); idx++)
 	{
-		strAlphabet.push_back(alphabet_AZ[str_.GetStrType(idx)]);	// 알파벳 타입에 맞게 깊은 복사
+		currAlphabet.push_back(alphabet_AZ[inputStr->GetStrType(idx)]);	// 알파벳 타입에 맞게 깊은 복사
 
 		for (int i = 0; i < alphabet_AZ[idx].GetCoordNum(); i++)
 		{
-			strAlphabet[idx].SetTargetPos(i, ROW_OFFSET_LEN * row, COL_OFFSET_LEN * col);	// 좌표에 옵셋 적용
-			strAlphabet[idx].ShowCoord(i);
+			currAlphabet[idx].SetTargetPos(i, ROW_OFFSET_LEN * row, COL_OFFSET_LEN * col);	// 좌표에 옵셋 적용
+			currAlphabet[idx].ShowCoord(i);
 		}
 		cout << endl;
 		col++;
@@ -84,4 +84,19 @@ void WmxHandler::SetOffset( const InputString& str_)
 int WmxHandler::GetAxisNum(int i) const
 {
 	return alphabet->GetAxisNum(i);
+}
+
+bool WmxHandler::SetAlphabetString(const std::string str_)
+{
+	if (str_.size() < MAX_COL * MAX_ROW)
+	{
+		inputStr->SetString(str_);
+		SetOffset();	// 문자 간격, 줄바꿈 설정
+		return true;
+	}
+	else
+	{
+		emit AlarmOccurred("작성 가능한 글자수를 초과했습니다.");
+		return false;
+	}
 }
