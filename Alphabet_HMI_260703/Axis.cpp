@@ -45,3 +45,15 @@ std::string Axis::GetAxisVelocity(int axis_, double* velocity)
 	}
 	return "";
 }
+
+std::string Axis::GetStatus(CoreMotionStatus* st)
+{
+
+	err = cMotion->GetStatus(st);
+	if (err != ErrorCode::None)
+	{
+		wmxlib->ErrorToString(err, errString, sizeof(errString));
+		return GetErrorMessage();
+	}
+	return "";
+}

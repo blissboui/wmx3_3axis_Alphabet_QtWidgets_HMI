@@ -23,10 +23,13 @@ private slots:
     void closeEvent(QCloseEvent* event) override;
     void ShowAlarm(const QString& message);
     QString WrapEnglishText(const QString& text, QLabel* label);
+    void UpdateProgressBar(int completedCount);
+    void UpdateHmiLamp(bool isOn, int select);
 private:
     Ui::HMI_mainClass ui;
     QTimer monitorTimer;
     QString alphabetInput;
     WmxHandler wmxCtrl;
+    int totalCount = 0;
 };
 

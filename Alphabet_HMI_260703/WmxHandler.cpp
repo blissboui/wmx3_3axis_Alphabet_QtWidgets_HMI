@@ -3,7 +3,6 @@
 
 WmxHandler::WmxHandler(QObject* parent) :
 	QObject(parent),
-	alphabet(std::make_shared<Alphabet>()),
 	engineCtrl(std::make_shared<Engine>(&wmx)),
 	inputStr(std::make_shared<AlphabetString>()),
 	axisCtrl(std::make_shared<Axis>(&wmx)),
@@ -14,7 +13,7 @@ WmxHandler::WmxHandler(QObject* parent) :
 	// 통신 시작
 	StartCommunication();
 	// 엑셀 csv 파일로부터 A~Z 알파벳 좌표 데이터 읽은 후 전달한 변수에 저장
-	Alphabet::SetAlphabetData(alphabet_AZ, (std::string)"C:\\Users\\abc\\source\\repos\\wmx3_3axis_Alphabet_Program\\AlphabetData.csv");
+	Alphabet::SetAlphabetData(alphabet_AZ, (std::string)"C:\\Users\\abc\\source\\repos\\wmx3_3axis_Alphabet_Program\\AlphabetData.csv", gAxis);
 }
 
 void WmxHandler::CreateDevice()
@@ -35,13 +34,25 @@ void WmxHandler::StartCommunication()
 	}
 }
 
-void WmxHandler::ServoOnOff(const int select)
+void WmxHandler::ServoOnOff(const int state)
 {
-	errMes = axisCtrl->ServoOnOff(select);
+	errMes = axisCtrl->ServoOnOff(state);
 	if (!errMes.empty())
 	{
 		emit AlarmOccurred(QString::fromStdString(errMes));
 	}
+	emit LampStateChanged(state, 0);
+}
+
+void WmxHandler::GetServoState() const
+{
+	CoreMotionAxisStatus st;
+	errMes = axisCtrl->GetStatus(&st);
+	if (!errMes.empty())
+	{
+		
+	}
+	
 }
 
 void WmxHandler::GetAxisPosition(int axis_, double* position)
@@ -56,8 +67,8 @@ void WmxHandler::GetAxisVelocity(int axis_, double* velocity)
 
 void WmxHandler::SetOffset()
 {
-	vector<Alphabet> currAlphabet;	// 입력한 문자열 알파벳 배열
 	int row = 0, col = 0;
+	currAlphabet.clear();	// 이전 문자열 초기화
 
 	for (int idx = 0; idx < inputStr->GetStrLen(); idx++)
 	{
@@ -70,7 +81,8 @@ void WmxHandler::SetOffset()
 		}
 		cout << endl;
 		col++;
-		if (col >= MAX_COL) {
+		if (col >= MAX_COL) { 
+
 			col = 0;
 			row++;
 		}
@@ -83,7 +95,7 @@ void WmxHandler::SetOffset()
 
 int WmxHandler::GetAxisNum(int i) const
 {
-	return alphabet->GetAxisNum(i);
+	return gAxis[i];
 }
 
 bool WmxHandler::SetAlphabetString(const std::string str_)
@@ -100,3 +112,4 @@ bool WmxHandler::SetAlphabetString(const std::string str_)
 		return false;
 	}
 }
+

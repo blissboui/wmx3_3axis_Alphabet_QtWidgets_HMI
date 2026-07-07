@@ -11,6 +11,6 @@ public:
 
 	std::string GetErrorMessage()
 	{
-		return errMessage = std::string(errString) + " (Error: " + std::to_string(err) + ')';
+		return errMessage = std::string(errString) + " (Error: " + std::to_string(err) + ")";
 	}
 };

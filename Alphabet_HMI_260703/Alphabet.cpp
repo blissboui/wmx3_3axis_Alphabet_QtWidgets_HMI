@@ -6,7 +6,7 @@ void Alphabet::SetType(int n) {
 void Alphabet::SetCoordNum(int n) {
 	coordNum = n;
 }
-void Alphabet::SetCoord(const double coord_[3]) {
+void Alphabet::SetCoord(const double coord_[3], const int* gAxis) {
 	Motion::LinearIntplCommand cmd;
 	cmd.axisCount = 3;
 	for (int i = 0; i < 3; i++) {
@@ -22,7 +22,7 @@ void Alphabet::SetCoord(const double coord_[3]) {
 int Alphabet::GetCoordNum() const {
 	return coordNum;
 }
-void Alphabet::SetAlphabetData(vector<Alphabet>& alphabet_AZ, std::string fileName) {
+void Alphabet::SetAlphabetData(vector<Alphabet>& alphabet_AZ, std::string fileName, const int* gAxis) {
 	std::vector<std::vector<double>> alphabetData;
 	if (!FileOpen(alphabetData, fileName)) {
 		//cout << "파일 열기 실패" << endl;
@@ -33,12 +33,12 @@ void Alphabet::SetAlphabetData(vector<Alphabet>& alphabet_AZ, std::string fileNa
 		alphabet_AZ[i].SetType(i);
 		alphabet_AZ[i].SetCoordNum(static_cast<int>(alphabetData[i][6]));
 		for (int k = 0; k < alphabet_AZ[i].GetCoordNum(); k++) {
-			double coord_[3] = {
+			double coord_[3] = {	// x, y, z 좌표
 				alphabetData[count][0],
 				alphabetData[count][1],
 				alphabetData[count][2]
 			};
-			alphabet_AZ[i].SetCoord(coord_);
+			alphabet_AZ[i].SetCoord(coord_, gAxis);
 			count++;
 		}
 	}
@@ -75,11 +75,6 @@ void Alphabet::SetTargetPos(const int idx, const int rowOf, const int colOf) {
 Motion::LinearIntplCommand& Alphabet::GetLinearIntplCommand(int i)
 {
 	return coord[i];
-}
-
-int Alphabet::GetAxisNum(int i) const
-{
-	return gAxis[i];
 }
 
 void Alphabet::ShowCoord(int i) {

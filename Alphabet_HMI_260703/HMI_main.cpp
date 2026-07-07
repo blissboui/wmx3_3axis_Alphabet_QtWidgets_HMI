@@ -16,14 +16,24 @@ HMI_main::HMI_main(QWidget *parent)
 	
 	ui.leAlphabetInput->setValidator(alphabetValidator);
 
+	// 알파벳 입력 처리
 	connect(ui.leAlphabetInput, &QLineEdit::returnPressed, this, &HMI_main::InputAlphabet);	// 엔터키 입력 시 InputAlphabet() 호출
 
-
+	// Axis 상태
     connect(&monitorTimer, &QTimer::timeout, this, &HMI_main::UpdateAxisStatus);
+	monitorTimer.start(100); // 100 ms
 
-	monitorTimer.start(100); // Update every 100 ms
-
+	// 알람
 	connect(&wmxCtrl, &WmxHandler::AlarmOccurred, this, &HMI_main::ShowAlarm);
+
+	// Progress
+	connect(&wmxCtrl, &WmxHandler::ProgressChanged, this, &HMI_main::UpdateProgressBar);
+	ui.pbProgress->setRange(0, 100);
+	ui.pbProgress->setValue(0);
+
+	// Lamp
+	connect(&wmxCtrl, &WmxHandler::LampStateChanged, this, &HMI_main::UpdateHmiLamp);
+
 }
 
 HMI_main::~HMI_main()
@@ -33,22 +43,23 @@ HMI_main::~HMI_main()
 
 void HMI_main::on_btnServoOn_clicked()   // Servo On
 {
-	wmxCtrl.ServoOnOff(1);  // Servo On
+	wmxCtrl.ServoOnOff(1);
 }
 
 void HMI_main::on_btnServoOff_clicked()  // Servo Off
 {
-	wmxCtrl.ServoOnOff(0);  // Servo Off
+	wmxCtrl.ServoOnOff(0);
 }	
 
 void HMI_main::on_btnStart_clicked()   // Start
 {
-
+	UpdateHmiLamp(1, 1);
+	if (totalCount <= 0) return;
 }
 
 void HMI_main::on_btnStop_clicked()   // Stop
 {
-
+	UpdateHmiLamp(0, 1);
 }
 
 void HMI_main::UpdateAxisStatus()   // Axis 상태 읽기
@@ -86,8 +97,11 @@ void HMI_main::InputAlphabet()
 	if (wmxCtrl.SetAlphabetString(alphabetInput.toStdString()))	// QString -> std::string 변환 후 WmxHandler에 전달
 	{
 		// 입력한 문자열 띄우기
-		ui.lblInputResult->setText(WrapEnglishText(alphabetInput, ui.lblInputResult));  // 확인용 Label
+		ui.lblInputResult->setText(WrapEnglishText(alphabetInput, ui.lblInputResult));
+		totalCount = alphabetInput.length();
+		ui.pbProgress->setValue(0);
 	}
+	ui.leAlphabetInput->clear();	// 입력창 초기화
 }
 
 void HMI_main::closeEvent(QCloseEvent* event)
@@ -125,4 +139,57 @@ QString HMI_main::WrapEnglishText(const QString& text, QLabel* label)
 	result += line;
 
 	return result;
+}
+
+void HMI_main::UpdateProgressBar(int completedCount)
+{
+	if (totalCount <= 0)
+	{
+		ui.pbProgress->setValue(0);
+		return;
+	}
+
+	int progress = completedCount * 100 / totalCount;
+
+	ui.pbProgress->setValue(progress);
+}
+
+void HMI_main::UpdateHmiLamp(bool isOn, int select)
+{
+	// 0: Servo Lamp, 1: Move Lamp
+	QString strOn = {
+		"background-color: lime;"
+		"border: none;"
+		"border-radius: 5px;"
+	};
+	QString strOff = {
+		"background-color: gray;"
+		"border: none;"
+		"border-radius: 5px;"
+	};
+	
+	switch (select)
+	{
+	case 0:	// Servo Lamp
+		if (isOn)
+		{
+			ui.lblServoLamp->setStyleSheet(strOn);
+		}
+		else
+		{
+			ui.lblServoLamp->setStyleSheet(strOff);
+		}
+		break;
+	case 1: // Move Lamp
+		if (isOn)
+		{
+			ui.lblMoveLamp->setStyleSheet(strOn);
+		}
+		else
+		{
+			ui.lblMoveLamp->setStyleSheet(strOff);
+		}
+		break;
+	}
+
 }
