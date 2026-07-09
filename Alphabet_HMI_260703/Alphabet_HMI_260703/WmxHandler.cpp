@@ -1,11 +1,13 @@
 ﻿#include "WmxHandler.h"
 #include <QString>
 
+
 WmxHandler::WmxHandler(QObject* parent) :
 	QObject(parent),
 	engineCtrl(std::make_shared<Engine>(&wmx)),
 	inputStr(std::make_shared<AlphabetString>()),
 	axisCtrl(std::make_shared<Axis>(&wmx)),
+	sharedMemCtrl(std::make_shared<SharedMemory>()),
 	alphabet_AZ(27)
 {
 	// 디바이스 생성
@@ -13,7 +15,9 @@ WmxHandler::WmxHandler(QObject* parent) :
 	// 통신 시작
 	StartCommunication();
 	// 엑셀 csv 파일로부터 A~Z 알파벳 좌표 데이터 읽은 후 전달한 변수에 저장
-	Alphabet::SetAlphabetData(alphabet_AZ, (std::string)"C:\\Users\\abc\\source\\repos\\wmx3_3axis_Alphabet_Program\\AlphabetData.csv", gAxis);
+	Alphabet::SetAlphabetData(alphabet_AZ, (std::string)"C:\\Users\\boboy\\source\\repos\\Data\\AlphabetData.csv", gAxis);
+	// 공유 메모리 생성
+	sharedMemCtrl->Create();
 }
 
 void WmxHandler::CreateDevice()
@@ -41,18 +45,23 @@ void WmxHandler::ServoOnOff(const int state)
 	{
 		emit AlarmOccurred(QString::fromStdString(errMes));
 	}
-	emit LampStateChanged(state, 0);
 }
 
-void WmxHandler::GetServoState() const
+void WmxHandler::GetServoState()
 {
-	CoreMotionAxisStatus st;
-	errMes = axisCtrl->GetStatus(&st);
+	bool allServo;
+	errMes = (string)axisCtrl->GetStatus(&allServo);
 	if (!errMes.empty())
 	{
-		
+		emit AlarmOccurred(QString::fromStdString(errMes));
 	}
-	
+	if (allServo != lastServoOn)
+	{
+		// 3축 전체 서보 On 일때만 램프 On
+		// 서보 상태 변화 있을때만 램프 상태 변경
+		emit LampStateChanged(allServo ? true : false, 0);
+		lastServoOn = allServo;
+	}
 }
 
 void WmxHandler::GetAxisPosition(int axis_, double* position)
@@ -74,12 +83,10 @@ void WmxHandler::SetOffset()
 	{
 		currAlphabet.push_back(alphabet_AZ[inputStr->GetStrType(idx)]);	// 알파벳 타입에 맞게 깊은 복사
 
-		for (int i = 0; i < alphabet_AZ[idx].GetCoordNum(); i++)
+		for (int i = 0; i < currAlphabet[idx].GetCoordNum(); i++)
 		{
 			currAlphabet[idx].SetTargetPos(i, ROW_OFFSET_LEN * row, COL_OFFSET_LEN * col);	// 좌표에 옵셋 적용
-			currAlphabet[idx].ShowCoord(i);
 		}
-		cout << endl;
 		col++;
 		if (col >= MAX_COL) { 
 
@@ -113,3 +120,32 @@ bool WmxHandler::SetAlphabetString(const std::string str_)
 	}
 }
 
+void WmxHandler::SendCurrAlphabet()
+{
+	if (!sharedMemCtrl->SendCoord(currAlphabet))
+	{
+		emit AlarmOccurred("공유 메모리 좌표 전송 실패");
+		return;
+	}
+	sharedMemCtrl->SendInput();
+}
+
+void WmxHandler::SendStartMove()
+{
+	sharedMemCtrl->SendMove();
+}
+
+void WmxHandler::SendStopMove()
+{
+	sharedMemCtrl->SendStop();
+}
+
+void WmxHandler::UpdateCompletedCount()
+{
+	emit ProgressChanged(sharedMemCtrl->GetCompletedCount());
+}
+
+void WmxHandler::SetCompletedCount(int i)
+{
+	sharedMemCtrl->SetCompletedCount(i);
+}

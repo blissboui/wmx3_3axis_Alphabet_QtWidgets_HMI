@@ -20,9 +20,9 @@ enum AXIS
 };
 enum PROFILE
 {
-	VELOCITY = 70000,	// (70mm/s)
-	ACC = 100000,
-	DEC = 100000, 
+	VELOCITY = 700000,	// (70mm/s)
+	ACC = 1000000,
+	DEC = 1000000, 
 	ENC = 1000	// (1000cts == 1mm)
 };
 

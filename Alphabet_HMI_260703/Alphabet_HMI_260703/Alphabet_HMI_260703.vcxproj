@@ -65,11 +65,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\SoftServo\WMX3\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Common_Alphabet_260708\Common_260630;C:\Program Files\SoftServo\WMX3\Include</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files\SoftServo\WMX3\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Common_Alphabet_260708\Common_260630;C:\Program Files\SoftServo\WMX3\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>AdvancedMotionApi.lib;ApiBufferApi.lib;CompensationApi.lib;CoreMotionApi.lib;CyclicBufferApi.lib;EventApi.lib;IMDll.lib;IOApi.lib;LogApi.lib;UserMemoryApi.lib;WMX3Api.lib;legacy_stdio_definitions.lib;legacy_stdio_wide_specifiers.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -105,6 +105,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common_Alphabet_260708\Common_260630\SharedMemory.cpp" />
     <ClCompile Include="Axis.cpp" />
     <ClCompile Include="HMI_main.cpp" />
     <ClCompile Include="WmxHandler.cpp" />

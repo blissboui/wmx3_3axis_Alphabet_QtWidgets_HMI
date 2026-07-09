@@ -10,6 +10,5 @@ public:
 
 private:
 	std::string str;
-	int strLen;
 	std::vector<int> strType;
 };

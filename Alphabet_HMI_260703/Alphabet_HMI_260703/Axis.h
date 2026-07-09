@@ -9,11 +9,11 @@ public:
 	std::string ServoOnOff(const int select);	// 서보 on/off
 	std::string GetAxisPosition(int axis_, double* position);		// 현재 위치
 	std::string GetAxisVelocity(int axis_, double* velocity);		// 현재 속도
-	std::string GetStatus(CoreMotionStatus* st);
+	std::string GetStatus(bool* servoSt);
 private:
 	WMX3Api* wmxlib;
 	std::shared_ptr<CoreMotion> cMotion;
 	std::shared_ptr<AxisSelection> axisSel;
 	std::shared_ptr<AxisControl> axisCtrl;
-
+	std::shared_ptr<CoreMotionStatus> st;
 };

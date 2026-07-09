@@ -12,7 +12,7 @@ HMI_main::HMI_main(QWidget *parent)
 {
     ui.setupUi(this);
 
-	auto* alphabetValidator = new QRegularExpressionValidator(QRegularExpression("[A-Za-z]*"), this);
+	auto* alphabetValidator = new QRegularExpressionValidator(QRegularExpression("[A-Za-z ]*"), this);
 	
 	ui.leAlphabetInput->setValidator(alphabetValidator);
 
@@ -33,7 +33,6 @@ HMI_main::HMI_main(QWidget *parent)
 
 	// Lamp
 	connect(&wmxCtrl, &WmxHandler::LampStateChanged, this, &HMI_main::UpdateHmiLamp);
-
 }
 
 HMI_main::~HMI_main()
@@ -48,18 +47,21 @@ void HMI_main::on_btnServoOn_clicked()   // Servo On
 
 void HMI_main::on_btnServoOff_clicked()  // Servo Off
 {
-	wmxCtrl.ServoOnOff(0);
+	if(QMessageBox::question(this, "Select", "Are you sure you want to turn off the servo?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes ? true : false)
+		wmxCtrl.ServoOnOff(0);
 }	
 
 void HMI_main::on_btnStart_clicked()   // Start
 {
-	UpdateHmiLamp(1, 1);
 	if (totalCount <= 0) return;
+	UpdateHmiLamp(1, 1);	// 램프 on
+	wmxCtrl.SendStartMove();	// Start 명령 전송
 }
 
 void HMI_main::on_btnStop_clicked()   // Stop
 {
-	UpdateHmiLamp(0, 1);
+	UpdateHmiLamp(0, 1);	// 임시
+	wmxCtrl.SendStopMove();	// Stop 명령 전송
 }
 
 void HMI_main::UpdateAxisStatus()   // Axis 상태 읽기
@@ -87,6 +89,10 @@ void HMI_main::UpdateAxisStatus()   // Axis 상태 읽기
 		wmxCtrl.GetAxisVelocity(wmxCtrl.GetAxisNum(i), &vel);
 		lblVel[i]->setText(QString::number(vel, 'f', 2));
 	}
+
+	wmxCtrl.GetServoState();	// 서보 상태 갱신
+
+	wmxCtrl.UpdateCompletedCount();	// progress 갱신
 }
 
 void HMI_main::InputAlphabet()
@@ -99,7 +105,9 @@ void HMI_main::InputAlphabet()
 		// 입력한 문자열 띄우기
 		ui.lblInputResult->setText(WrapEnglishText(alphabetInput, ui.lblInputResult));
 		totalCount = alphabetInput.length();
-		ui.pbProgress->setValue(0);
+		wmxCtrl.SetCompletedCount(0); // 완료 카운트 0으로 초기화
+		ui.pbProgress->setValue(0);	// 진행률 0%
+		wmxCtrl.SendCurrAlphabet();	// 입력 알파벳 전송
 	}
 	ui.leAlphabetInput->clear();	// 입력창 초기화
 }
@@ -171,25 +179,11 @@ void HMI_main::UpdateHmiLamp(bool isOn, int select)
 	switch (select)
 	{
 	case 0:	// Servo Lamp
-		if (isOn)
-		{
-			ui.lblServoLamp->setStyleSheet(strOn);
-		}
-		else
-		{
-			ui.lblServoLamp->setStyleSheet(strOff);
-		}
+		ui.lblServoLamp->setStyleSheet(isOn ? strOn : strOff);
 		break;
+
 	case 1: // Move Lamp
-		if (isOn)
-		{
-			ui.lblMoveLamp->setStyleSheet(strOn);
-		}
-		else
-		{
-			ui.lblMoveLamp->setStyleSheet(strOff);
-		}
+		ui.lblMoveLamp->setStyleSheet(isOn ? strOn : strOff);
 		break;
 	}
-
 }

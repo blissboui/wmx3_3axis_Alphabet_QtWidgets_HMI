@@ -1,4 +1,5 @@
 ﻿#include "Alphabet.h"
+#include "MotionShared.h"
 
 void Alphabet::SetType(int n) {
 	type = n;
@@ -79,4 +80,17 @@ Motion::LinearIntplCommand& Alphabet::GetLinearIntplCommand(int i)
 
 void Alphabet::ShowCoord(int i) {
 	/*cout << "[ " << coord[i].target[0] << ", " << coord[i].target[1] << ", " << coord[i].target[2] << " ]" << endl;*/
+}
+
+const std::vector<Motion::LinearIntplCommand>& Alphabet::GetCoord() const
+{
+	return coord;
+}
+
+Alphabet& Alphabet::operator=(const AlphabetShared& rhs)
+{
+	coord.assign(rhs.coord, rhs.coord + rhs.coordCount);
+	coordNum = rhs.coordCount;
+
+	return *this;
 }

@@ -52,6 +52,9 @@
     <ClCompile Include="HMI_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common_Alphabet_260708\Common_260630\SharedMemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alphabet.h">

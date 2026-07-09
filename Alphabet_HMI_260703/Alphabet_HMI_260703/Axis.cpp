@@ -5,6 +5,7 @@ Axis::Axis(WMX3Api* wmx) : wmxlib(wmx)
 	cMotion = std::make_shared<CoreMotion>(wmxlib);
 	axisCtrl = std::make_shared<AxisControl>(cMotion.get());
 	axisSel = std::make_shared<AxisSelection>();
+	st = std::make_shared<CoreMotionStatus>();
 
 	axisSel->axisCount = 3; // XYZ 축 선택
 	for (int i = 0; i < axisSel->axisCount; i++) {
@@ -46,14 +47,14 @@ std::string Axis::GetAxisVelocity(int axis_, double* velocity)
 	return "";
 }
 
-std::string Axis::GetStatus(CoreMotionStatus* st)
+std::string Axis::GetStatus(bool *servoSt)
 {
-
-	err = cMotion->GetStatus(st);
+	err = cMotion->GetStatus(st.get());
 	if (err != ErrorCode::None)
 	{
 		wmxlib->ErrorToString(err, errString, sizeof(errString));
 		return GetErrorMessage();
 	}
+	*servoSt = st->axesStatus[X_AXIS].servoOn && st->axesStatus[Y_AXIS].servoOn && st->axesStatus[Z_AXIS].servoOn;
 	return "";
 }

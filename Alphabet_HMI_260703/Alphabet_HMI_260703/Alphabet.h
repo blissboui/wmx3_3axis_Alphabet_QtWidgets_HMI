@@ -4,6 +4,7 @@
 #include <sstream>
 #include <array>
 
+class AlphabetShared;
 
 class Alphabet {
 public:
@@ -13,9 +14,11 @@ public:
 	void SetTargetPos(const int idx, const int rowOf, const int colOf);
 	Motion::LinearIntplCommand& GetLinearIntplCommand(int i);
 	int GetCoordNum() const;
+	void ShowCoord(int i);
+	const std::vector<Motion::LinearIntplCommand>& GetCoord() const;
+	Alphabet& operator=(const AlphabetShared& rhs);
 	static void SetAlphabetData(vector<Alphabet>& alphabet_AZ, std::string fileName, const int* gAxis);
 	static bool FileOpen(std::vector<std::vector<double>>& data, const std::string fileName);
-	void ShowCoord(int i);
 private:
 	int type;		// 알파벳 종류
 	int coordNum;	// xyz 좌표 개수
