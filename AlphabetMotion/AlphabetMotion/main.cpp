@@ -1,5 +1,6 @@
 #include "AlphabetMotion.h"
 
+
 int main()
 {
 	AlphabetMotion motion;
@@ -17,6 +18,7 @@ int main()
 			motion.StartMotion();
 			break;
 		case CMD_STOP:
+			// 정지 기능 쓰레드에서 동작
 			break;
 		case CMD_INPUT:
 			if (!motion.SetAlphabet())

@@ -102,12 +102,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_HMI_260703\Alphabet_HMI_260703;C:\Users\boboy\Desktop\자료\Movensys자료\C++\Common_Alphabet_260708\Common_260630;C:\Program Files\SoftServo\WMX3\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_Project\Alphabet_HMI_260703\Alphabet_HMI_260703;C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_Project\Common_Alphabet_260708\Common_260630;C:\Program Files\SoftServo\WMX3\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_HMI_260703\Alphabet_HMI_260703;C:\Program Files\SoftServo\WMX3\Lib;C:\Users\boboy\Desktop\자료\Movensys자료\C++\Common_Alphabet_260708\Common_260630;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_Project\Alphabet_HMI_260703\Alphabet_HMI_260703;C:\Program Files\SoftServo\WMX3\Lib;C:\Users\boboy\Desktop\자료\Movensys자료\C++\Alphabet_Project\Common_Alphabet_260708\Common_260630;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>AdvancedMotionApi.lib;ApiBufferApi.lib;CompensationApi.lib;CoreMotionApi.lib;CyclicBufferApi.lib;EventApi.lib;IMDll.lib;IOApi.lib;LogApi.lib;UserMemoryApi.lib;WMX3Api.lib;legacy_stdio_definitions.lib;legacy_stdio_wide_specifiers.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
